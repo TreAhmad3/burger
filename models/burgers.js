@@ -1,27 +1,32 @@
-// Import the ORM to create functions that will interact with the database.
-var orm = require("../config/orm.js");
+var Sequalize = require("sequelize");
 
-var burger_call = {
-  insert: function(some_val, cb){
-    orm.insert('burgers_tbl', 'burger_name', some_val, function(res){
-      cb(res);
-    });
+var sequalize = require("../config/connection.js");
+
+var Burger = sequelize.define("burgers", {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
   },
-  read: function(cb){
-    orm.read('burgers_tbl', function(res){
-      cb(res);
-    });
+  burger_name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      len: [1]
+    }
   },
-  update: function(user_id, cb){
-    orm.update('burgers_tbl', 'devoured', 1 , 'id', user_id, function(res){
-      cb(res);
-    });
+  devoured: {
+    type: Sequalize.BOOLEAN,
+    defaultValue: 0
   },
-  delete: function(user_id, cb){
-    orm.delete('burgers_tbl', 'id', user_id, function(res){
-      cb(res);
-    });
+  created_at: {
+    type: Sequelize.DATE,
+    defaultValue: Sequalize.Now
   }
-}
+}, {
+  timestamps: false
+});
 
-module.exports = burger_call;
+Burger.sync();
+
+module.exports = Burger;

@@ -1,8 +1,10 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var methodOverride = require("method-override");
+var exphbs = require("express-handlebars");
 
-var port = 3333;
+// for heroku
+app.set('port', (process.env.PORT || 3333));
 
 var app = express();
 
@@ -14,9 +16,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Override with POST having ?_method=DELETE
 app.use(methodOverride("_method"));
 
-// Set Handlebars.
-var exphbs = require("express-handlebars");
-
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
@@ -25,4 +24,6 @@ var routes = require("./controllers/burgers_controller.js");
 
 app.use("/", routes);
 
-app.listen(port);
+app.listen(app.get('port'), function() {
+    console.log('App is running on port', app.get('port'));
+});
